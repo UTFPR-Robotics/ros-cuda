@@ -1,0 +1,5 @@
+<launch>
+  <node pkg="roscuda_laserscan_filter" type="roscuda_laserscan_filter_node" name="roscuda_laserscan_filter" respawn="true" output="screen">
+  </node>
+</launch>
+

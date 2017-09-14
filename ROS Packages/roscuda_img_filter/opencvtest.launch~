@@ -1,0 +1,5 @@
+<launch>
+  <node pkg="rgb_to_gray" type="rgb_to_gray_node" name="rgb_to_gray" respawn="true" output="screen">
+  </node>
+</launch>
+

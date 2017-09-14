@@ -1,0 +1,5 @@
+<launch>
+  <node pkg="opencvtest" type="opencvtest_node" name="opencvtest" respawn="true" output="screen">
+  </node>
+</launch>
+

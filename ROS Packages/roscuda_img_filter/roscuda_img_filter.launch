@@ -1,0 +1,5 @@
+<launch>
+  <node pkg="roscuda_img_filter" type="roscuda_img_filter_node" name="roscuda_img_filter" respawn="true" output="screen">
+  </node>
+</launch>
+

@@ -1,0 +1,5 @@
+<launch>
+  <node pkg="roscuda_basic" type="roscuda_basic_node" name="roscuda_basic" respawn="true" output="screen">
+  </node>
+</launch>
+

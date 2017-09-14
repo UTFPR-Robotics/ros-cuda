@@ -1,0 +1,5 @@
+<launch>
+  <node pkg="roscuda_vectoradd" type="roscuda_vectoradd" name="roscuda_vectoradd" respawn="true" output="screen">
+  </node>
+</launch>
+
