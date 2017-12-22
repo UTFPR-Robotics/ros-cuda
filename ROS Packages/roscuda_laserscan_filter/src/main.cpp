@@ -5,19 +5,19 @@
 //Since we already know the laserscan used has fixed size, we will not bother using dynamic size
 #define SIZE 511
 
-float *average3(int num, float *a, float *b, float *c, float *d);
-float a[SIZE], b[SIZE], c[SIZE], d[SIZE];
+float *average3(int num, float *in1, float *in2, float *in3, float *out);
+float in1[SIZE], in2[SIZE], in3[SIZE], out[SIZE];
 sensor_msgs::LaserScan msg_laser;
 
 void laserscan_Callback(const sensor_msgs::LaserScan& msg)
 {		
 	msg_laser=msg;
-	// Cicle vectors (c=b, b=a, a=new)
+	// Cycle vectors (in3=in2, in2=in1, in1=new)
 	for(int i=0;i<SIZE;i++)
 	{
-		c[i]=b[i];
-		b[i]=a[i];
-		a[i]=msg.ranges[i];
+		in3[i]=in2[i];
+		in2[i]=in1[i];
+		in1[i]=msg.ranges[i];
 	}
 }
 
@@ -31,19 +31,19 @@ int main(int argc, char **argv)
 	// Initializes the vectors with zeros
 	for (int i = 0; i < SIZE; ++i)
 	{
-		a[i]=b[i]=c[i]=d[i]=0;
+		in1[i]=in2[i]=in3[i]=out[i]=0;
 	}
 	while(ros::ok())
-	{    
+	{   // Get new message and perform average
 		ros::spinOnce();
-		average3(SIZE, a, b, c, d);
+		average3(SIZE, in1, in2, in3, out);
 		// Assign frame_id and ranges size to be able to publish and visualize topic
 		msg_laser.header.frame_id="LaserScanner_2D";
 		msg_laser.ranges.resize(511);
 		// Assign values
 		for(int i=0;i<SIZE;i++)
 		{
-			msg_laser.ranges[i]=d[i];
+			msg_laser.ranges[i]=out[i];	
 		}
 		laser_pub.publish(msg_laser);
 	}

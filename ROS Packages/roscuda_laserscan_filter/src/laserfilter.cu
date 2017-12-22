@@ -5,39 +5,39 @@
 
 #define THREADS_PER_BLOCK 128
 
-__global__ void av3(int n, float *a, float *b, float *c, float *d)
+__global__ void av3(int n, float *in1, float *in2, float *in3, float *out)
 {
 	int index = threadIdx.x + blockIdx.x * blockDim.x;
 	// Guarantees that index does not go beyond vector size and applies average
 	if (index<n)
 	{
-			d[index] = (a[index] + b[index] + c[index])/3;
+			out[index] = (in1[index] + in2[index] + in3[index])/3;
 	}
 }
 
-float *average3(int num, float *a, float *b, float *c, float *d) 
+float *average3(int num, float *in1, float *in2, float *in3, float *out) 
 {
-	// Device copies of a, b, c, d, size of allocated memory, num of threads and blocks
-	float *d_a, *d_b, *d_c, *d_d; 
+	// Device copies of three inputs and output, size of allocated memory, num of threads and blocks
+	float *d_in1, *d_in2, *d_in3, *d_out; 
 	int size = num * sizeof(float);
 	int thr, blk;
-	// Alloc memory for device copies of a, b, c, d
-	cudaMalloc((void **)&d_a, size);
-	cudaMalloc((void **)&d_b, size);
-	cudaMalloc((void **)&d_c, size);
-	cudaMalloc((void **)&d_d, size);
+	// Alloc memory for device copies of inputs and outputs
+	cudaMalloc((void **)&d_in1, size);
+	cudaMalloc((void **)&d_in2, size);
+	cudaMalloc((void **)&d_in3, size);
+	cudaMalloc((void **)&d_out, size);
 	// Copy inputs to device
-	cudaMemcpy(d_a, a, size, cudaMemcpyHostToDevice);
-	cudaMemcpy(d_b, b, size, cudaMemcpyHostToDevice);
-	cudaMemcpy(d_c, c, size, cudaMemcpyHostToDevice);
+	cudaMemcpy(d_in1, in1, size, cudaMemcpyHostToDevice);
+	cudaMemcpy(d_in2, in2, size, cudaMemcpyHostToDevice);
+	cudaMemcpy(d_in3, in3, size, cudaMemcpyHostToDevice);
 	// Calculates blocks and threads and launch average3 kernel on GPU
 	blk=floor(num/THREADS_PER_BLOCK)+1;
 	thr=THREADS_PER_BLOCK;
-	av3<<<blk,thr>>>(num, d_a, d_b, d_c, d_d);
+	av3<<<blk,thr>>>(num, d_in1, d_in2, d_in3, d_out);
 	// Wait for the GPU to finish
 	cudaDeviceSynchronize();
 	// Copy result back to host and cleanup
-	cudaMemcpy(d, d_d, size, cudaMemcpyDeviceToHost);
-	cudaFree(d_a); cudaFree(d_b); cudaFree(d_c); cudaFree(d_d);
-	return d;
+	cudaMemcpy(out, d_out, size, cudaMemcpyDeviceToHost);
+	cudaFree(d_in1); cudaFree(d_in2); cudaFree(d_in3); cudaFree(d_out);
+	return out;
 }
