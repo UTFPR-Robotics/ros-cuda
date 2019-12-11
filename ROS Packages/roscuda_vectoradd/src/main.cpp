@@ -4,6 +4,7 @@
 #include "std_msgs/Float32.h"
 
 #define N (1024*1024)
+#define THREADS_PER_BLOCK 512
 
 int *testmain(int num, int threads);
 int size=10;
