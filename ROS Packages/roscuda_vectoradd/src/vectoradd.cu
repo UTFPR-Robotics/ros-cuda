@@ -20,7 +20,7 @@ void random_ints(int *i, int size)
 	}
 }
 
-int *testmain(int num) 
+int *testmain(int num, int threads) 
 {
 	int *in1, *in2, *out; // host copies of inputs and output
 	int *d_in1, *d_in2, *d_out; // device copies of inputs and output
@@ -41,7 +41,7 @@ int *testmain(int num)
 	cudaMemcpy(d_in2, in2, size, cudaMemcpyHostToDevice);
 
 	// Launch add() kernel on GPU
-	add<<<num/THREADS_PER_BLOCK,THREADS_PER_BLOCK>>>(d_in1, d_in2, d_out);
+	add<<<num/threads,threads>>>(d_in1, d_in2, d_out);
 	// Wait for the GPU to finish
 	cudaDeviceSynchronize();
 	// Copy result back to host
